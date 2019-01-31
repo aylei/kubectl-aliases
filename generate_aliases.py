@@ -30,8 +30,6 @@ def main():
     # (alias, full, allow_when_oneof, incompatible_with)
     cmds = [('k', 'kubectl', None, None)]
 
-    globs = [('sys', '--namespace=kube-system', None, ['sys'])]
-
     ops = [
         ('a', 'apply --recursive -f', None, None),
         ('ex', 'exec -i -t', None, None),
@@ -40,7 +38,6 @@ def main():
         ('p', 'proxy', None, ['sys']),
         ('g', 'get', None, None),
         ('d', 'describe', None, None),
-        ('rm', 'delete', None, None),
         ('run', 'run --rm --restart=Never --image-pull-policy=IfNotPresent -i -t', None, None),
         ]
 
@@ -57,15 +54,8 @@ def main():
     res_types = [r[0] for r in res]
 
     args = [
-        ('oyaml', '-o=yaml', ['g'], ['owide', 'ojson', 'sl']),
-        ('owide', '-o=wide', ['g'], ['oyaml', 'ojson']),
-        ('ojson', '-o=json', ['g'], ['owide', 'oyaml', 'sl']),
-        ('all', '--all-namespaces', ['g', 'd'], ['rm', 'f', 'no', 'sys'
-         ]),
         ('sl', '--show-labels', ['g'], ['oyaml', 'ojson']
          + diff(res_types, ['po', 'dep'])),
-        ('all', '--all', ['rm'], None), # caution: reusing the alias
-        ('w', '--watch', ['g'], ['oyaml', 'ojson', 'owide']),
         ]
 
     # these accept a value, so they need to be at the end and
@@ -78,7 +68,6 @@ def main():
     # [(part, optional, take_exactly_one)]
     parts = [
         (cmds, False, True),
-        (globs, True, False),
         (ops, True, True),
         (res, True, True),
         (args, True, False),
